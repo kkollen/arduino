@@ -1,0 +1,17 @@
+/*
+ * IRSensor.c
+ *
+ *  Created on: 28 sep. 2015
+ *      Author: Justin
+ */
+#include "IR.h"
+
+unsigned int value;
+
+unsigned int readIR1() {
+	value = GPIO0DATA & 0x100;
+	if (value == 0) {
+		return 1;
+	} else
+		return 0;
+}

@@ -1,0 +1,22 @@
+/*
+ * LedScore.h
+ *
+ *  Created on: 30 nov. 2015
+ *      Author: kevin
+ */
+
+#ifndef LEDSCORE_H_
+#define LEDSCORE_H_
+
+#define GPIO2 		0x50020000
+#define GPIO2DIR   (*(unsigned int *)(GPIO2 + 0x8000))
+#define GPIO2DATA  (*(unsigned int *)(GPIO2 + 0x3FFC))
+#endif /* LEDSCORE_H_ */
+
+void ledsInit(void);
+void ledScore(int b,int SmashValue);
+void writeLeds();
+void writeRGB(int rgb);
+void resetGPIO2();
+
+

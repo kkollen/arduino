@@ -1,0 +1,77 @@
+/*
+ * ledscore.c
+
+ *
+ *  Created on: 30 nov. 2015
+ *      Author: kevin
+ */
+#include "LedScore.h"
+#include <math.h>
+#include <stdio.h>
+
+void ledsInit(void) {
+	GPIO2DIR = 0x0fff;
+	GPIO2DATA&=~0xfff;
+	GPIO2DATA|=0x0ffe;
+	//writeLeds(2);
+}
+
+void ledscore(int b, int SmashValue) { // SmashValue is a value between 0 and 800, b is 1 when child is playing
+	resetGPIO2();
+	int points;
+	if (b == 1) {						//child is playing he can hit max 100
+		if(SmashValue>100){
+			SmashValue=100;
+		}
+		SmashValue = SmashValue * 8;
+		writeRGB(512);
+	}
+	if (b == 2){								//adult is playing, he can hit max 800
+		writeRGB(256);
+	}
+
+	if (SmashValue >= 100) {
+		points = SmashValue;
+		if (SmashValue > 800) {
+			points = 800;
+		}
+		while ((points % 100) != 0) {
+			points = points - 1;
+
+		}
+		points = (points / 100) ;
+
+
+		//printf("%i\n", score);
+		writeLeds(points);
+	}
+	else {
+		printf("your score is under 100");
+		clear();
+		write("your score is under 100");
+	}
+}
+
+void writeLeds(int Score) {
+
+	int j=0xfe00;
+	int k=2;
+	int i=0;
+	GPIO2DATA=GPIO2DATA&j;
+	while(i<(8-Score)){
+		GPIO2DATA=GPIO2DATA|k;
+		k=k<<1;
+		i++;
+	}
+
+	//GPIO2DATA = (GPIO2DATA & (((~Score ) << 1) & 0xfffe));
+	//printf("%d\n",GPIO2DATA);
+}
+void writeRGB(int rgb){
+
+	GPIO2DATA = (((~rgb) | 0xf8ff) << 1) & 0xfffe;
+	//printf("%d\n",GPIO2DATA);
+}
+void resetGPIO2(){
+	GPIO2DATA=0;
+}

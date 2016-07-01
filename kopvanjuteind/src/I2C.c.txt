@@ -1,0 +1,99 @@
+/*
+ * Game.c
+
+ *
+ *  Created on: 21 jun. 2016
+ *      Author: kevin
+ */
+#include "I2C.h"
+#include "IR.h"
+
+int Readvalue2 = 0;
+int delay;
+int status;
+
+void initCommunication() {
+	initI2C();
+}
+void initI2C() {
+	PRESETCTRL |= (1 << 1);					// De-asset I2C reset
+	ISER1 |= (1 << 8); 					// enable inerrupt
+	SYSAHBCLKCTRL |= (1 << 16) | (1 << 5);	// enable I2C clock
+	IOCON_PIO0_4 |= (1 << 0);		// Selects I2C function SCL (open-drain pin)
+	IOCON_PIO0_4 &= (~(1 << 8));
+	IOCON_PIO0_5 |= 0x01;			// Selects I2C function SDA (open-drain pin)
+	IOCON_PIO0_5 &= (~(1 << 8));
+	I2C0SCLH = 0x0a;
+	I2C0SCLL = 0x0a;
+
+}
+int readI2C() {
+	Readvalue2 = 0;
+	PRESETCTRL |= (1 << 1);
+	status = 0;
+	I2C0CONCLR = 0x2c;
+	I2C0CONSET = 0x60;
+	while (delay < 3) {
+	}
+	disableI2C1();
+	Readvalue2 = Readvalue2 * 8;
+	return Readvalue2;
+}
+void disableI2C1() {
+	PRESETCTRL &= (0 << 1);					// reset I2C reset
+}
+void state0x08() {
+	I2C0DAT = 0x11;			// 1. set slave adres with the direction bit
+	I2C0CONSET = 0x4;			// 2. set AA bit
+	I2C0CONCLR = 0x28;			// 3. clear SI flag
+}
+void state0x10() {
+	I2C0DAT = (13 << 4);			// 1. set slave adres with the direction bit
+	I2C0DAT |= 1;
+	I2C0CONSET = (1 << 2);			// 2. set AA bit
+	I2C0CONCLR = (1 << 3);			// 3. clear SI flag
+}
+void state0x40() {
+	I2C0CONSET = 0x04;
+	I2C0CONCLR = 0x08;
+}
+void state0x48() {
+	I2C0CONSET = 0x14;
+	I2C0CONCLR = 0x08;
+}
+void state0x50(int state50status) {
+	if (state50status == 1) {
+		Readvalue2 = I2C0DAT;
+		I2C0DAT = 0x00;
+		I2C0CONSET = 0x04;
+		I2C0CONCLR = 0x08;
+	}
+	else if (state50status == 4) {
+		I2C0CONCLR = 0x0c;
+		I2C0CONSET = 0x14;
+		I2C0CONCLR = 0x7C;
+	}
+}
+void state0x58() {
+	I2C0CONSET = 0x14;
+	I2C0CONCLR = 0x08;
+	delay = 4;
+
+}
+void I2C_IRQHandler(void) {
+	if (I2C0STAT == 0x08) {
+		state0x08();
+	} else if (I2C0STAT == 0x10) {
+		state0x10();
+	} else if (I2C0STAT == 0x40) {
+		state0x40();
+	} else if (I2C0STAT == 0x48) {
+		state0x48();
+	} else if (I2C0STAT == 0x50) {
+		status++;
+		state0x50(status);
+	} else if (I2C0STAT == 0x58) {
+		state0x58();
+	}
+}
+

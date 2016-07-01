@@ -1,0 +1,53 @@
+/*
+ * timer.c
+ *
+ *  Created on: 9 sep. 2015
+ *      Author: kevin
+ */
+
+#include <stdio.h>
+#include "timer.h"
+
+int s;
+void delay(unsigned int usec) {
+	TMR16B0TC = 0;
+
+	while (TMR16B0TC < usec)
+		;
+
+}
+void timerInit() {
+	SYSAHBCLKCTRL |= 0x0080;
+	TMR16B0TCR = 0x3;
+	TMR16B0PR = 11;
+	//TMR16B0MCR = 0x03;
+	TMR16B0TCR = 0x01;
+	//TMR16B0MR0 = 889;
+	//ISER1 |= 0x0200;
+	//TMR16B0MCR = 0x1;
+}
+
+
+void timer_async_usec(unsigned int usec) {
+	TMR16B0MR0 = usec;
+
+}
+
+void reset_timer_16_0() {
+	TMR16B0TCR = TMR16B0TCR | 0x2;
+	asm("nop");
+	TMR16B0TCR = TMR16B0TCR & 0xFFFFFFFD;
+	return;
+}
+
+//void TIMER16_0_IRQHandler(void) {}
+
+void disable_timer_16_0() {
+	TMR16B0TCR = TMR16B0TCR & 0xFFFFFFFE;
+	return;
+}
+
+void enable_timer_16_0() {
+	TMR16B0TCR = TMR16B0TCR | 0x1;
+	return;
+}

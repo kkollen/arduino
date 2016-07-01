@@ -1,0 +1,40 @@
+/*
+ * game.h
+ *
+ *  Created on: 21 jun. 2016
+ *      Author: kevin
+ */
+
+#ifndef I2C_H_
+#define I2C_H_
+
+//IC2//////////
+#define IOCON 0x40040000
+#define IOCON_PIO0_4  	(*(unsigned int *)(IOCON+0x4030)) // clk
+#define IOCON_PIO0_5  	(*(unsigned int *)(IOCON+0x4034))
+#define SYSAHBCLKCTRL 	(*(unsigned int *)(IOCON+0x8080))// wordt ook gebruikt in spi
+#define PRESETCTRL		(*(unsigned int *)(IOCON+0x8004))// wordt ook gebruikt in spi
+
+#define I2C 0x40000000
+#define I2C0CONSET		(*(unsigned int *)(I2C))
+#define I2C0STAT		(*(unsigned int *)(I2C+0x004))
+#define I2C0DAT			(*(unsigned int *)(I2C+0x008))
+#define I2C0SCLH		(*(unsigned int *)(I2C+0x010))
+#define I2C0SCLL		(*(unsigned int *)(I2C+0x014))
+#define I2C0CONCLR		(*(unsigned int *)(I2C+0x018))
+#define ISER1 			(*(unsigned int *)0xE000E104)
+
+
+void initCommunication();
+void initI2C();
+void disableI2C1();
+int  readI2C();
+void state0x08();
+void state0x10();
+void state0x40();
+void state0x48();
+void state0x50();
+void state0x58();
+void I2C_IRQHandler(void);
+
+#endif /* I2C_H_ */

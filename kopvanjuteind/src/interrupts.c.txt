@@ -1,0 +1,55 @@
+/*
+ * interrupts.c
+
+ *
+ *  Created on: 24 sep. 2015
+ *      Author: Justin
+ */
+
+
+#include "timer.h"
+#include "I2C.h"
+#include "interrupts.h"
+#include <stdio.h>
+#include "IR.h"
+unsigned int bitStorage;
+unsigned int readbit;
+int counter;
+
+
+void iRInit(){
+	GPIO0DIR &=  0xFFFFFEFF;	//set data direction to only read IR pin, 8.
+	GPIO0IBE |=  0xFFF; 		//set all gpio0 pins to give interrupt on both edges
+	GPIO0IS = 0x000;			//set all gpio0 pins to edge sensitive
+	GPIO0IE |= 0x100;			//set the bits to not masked
+	ISER0 |= 0x100;				//set Interrupts for IR
+	ISER1 |= 0x1000000;			//enable ISER1 bit 25 for enabling SSP1 interrupts
+}
+int getbitStorage(){
+	return readbit;
+}
+void PIOINT0_IRQHandler(void) {
+	if(counter < 28){									//zolang je nog geen 28 flanken hebt gehad, ga door
+		if(TMR16B0TC > 889 * 1.5) {						// als de timer boven de 1200 usec is schrijf er een 1 naartoe en hoog de teller op
+			bitStorage = bitStorage << 1 | readIR1();
+			counter++;
+		} else{
+			if(counter % 2) {							//als het programma nog bij het eerste bit zit schrijf een 1 naar de data opslag
+				bitStorage = bitStorage << 1 | readIR1();
+			}
+		}
+		counter++;										//hoog de teller op zodra het eerste bit "1" is
+	} else {											//als het programma 28 flanken heeft gehad schrijf de opslag naar de leds.
+		if((bitStorage & 0x3000 ) == 0x3000){
+			bitStorage &= 0x000F;						//maskeer de startbits, het togglebit, de adresbits en 3 databits. de databits worden gemaskeerd omdat je voor de 8 knoppen alleen de laatste 4 bits gebruikt
+			//printf("%i\n", bitStorage);
+			readbit=bitStorage;
+			//writeLeds(1 << (bitStorage-1));				//schrijf naar leds met cijfer 1, 2, 3, 4, 5, 6, 7, 8 omgezet naar binaire waardes.
+			bitStorage = 0;								//reset data opslag
+		}
+		counter = 0;
+		delay(65535);									//delay om errors te voorkomen
+	}
+	reset_timer_16_0();									//reset timer
+	GPIO0IC |= 0x100;						            //reset interrupt request handler
+}

@@ -1,0 +1,34 @@
+/*
+ * timer.h
+ *
+ *  Created on: 9 sep. 2015
+ *      Author: kevin
+ */
+
+#ifndef TIMER_H_
+#define TIMER_H_
+
+#define SYSAHBCLKCTRL (*(unsigned int *)(0x40048080))
+#define CT16B0        0X4000C000
+#define ISER1 		(*(unsigned int *)(0xe000e104))
+#define TMR16B0TCR   (*(unsigned int *)(CT16B0+0x004 ))
+#define TMR16B0TC	 (*(unsigned int *)(CT16B0+0x008 ))
+#define TMR16B0PR    (*(unsigned int *)(CT16B0+0x00c ))
+#define TMR16B0MR0 	(*(unsigned int *)(CT16B0+0xc018 ))
+#define TMR16B0MCR	(*(unsigned int *)(CT16B0+0x014 ))
+#define TMR16B0IR   (*(unsigned int *)(CT16B0+0x000 ))
+
+
+
+#endif /* TIMER_H_ */
+ void timerInit();
+ void sleep(int millis);
+ void timerRead();
+ void interruptReset();
+ void timercount();
+ void timer_async_usec(unsigned int usec);
+ void TIMER16_0_IRQHandler(void);
+ void reset_timer_16_0();
+ void disable_timer_16_0();
+ void enable_timer_16_0();
+ void delay(unsigned int usec);

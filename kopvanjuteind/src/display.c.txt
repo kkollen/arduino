@@ -1,0 +1,589 @@
+/*
+ * display.c
+ *
+ *  Created on: 24 jun. 2016
+ *      Author: Tom
+ */
+
+#include "display.h"
+#include "timer.h"
+#include "interrupts.h"
+#include <stdio.h>
+#include <string.h>
+int b = 0;
+int waarde;
+void displayInit() { // initialiseer het display
+
+	GPIODIR |= 0xFF0;
+	GPIODAT &= 0x000;
+	delay(5);
+	GPIODAT |= 0x800;
+	GPIODAT |= 0x30;
+
+	enable();
+	enable();
+	enable();
+	GPIODAT &= ~0x30;
+	delay(10);
+	GPIODAT |= 0x20;
+	enable();
+	enable();
+	GPIODAT &= ~0x20;
+	GPIODAT |= 0x80;
+	enable();
+	GPIODAT &= ~0x80;
+	enable();
+	GPIODAT |= 0x80;
+	enable();
+	GPIODAT &= ~0x80;
+	enable();
+	GPIODAT |= 0x10;
+	enable();
+	GPIODAT &= ~0x10;
+	enable();
+	GPIODAT |= 0x60;
+	enable();
+	GPIODAT &= ~0x60;
+	enable();
+	GPIODAT |= 0xF0;
+	enable();
+	GPIODAT &= ~0xF0;
+	enable();
+	GPIODAT |= 0x20;
+	enable();
+	GPIODAT &= ~0x20;
+
+}
+
+void menu() { // toont het menu
+	int f = 0;
+	int k = 0;
+	clear();
+	write("welkom");
+	nextLine();
+	write("bij kop van jut");
+
+	while (f < 100) {
+		delay(10000);
+		f++;
+	}
+	clear();
+	write("u kunt kiezen uit : ");
+	while (k < 100) {
+		delay(10000);
+		k++;
+	}
+	clear();
+	cursorHome();
+	write("1 voor kind");
+	nextLine();
+	write("2 voor volwassene");
+}
+void enable() { // zorgt ervoor dat de instructie wordt uitgevoerd
+	GPIODAT |= (1 << 10);
+	delay(1000);
+	GPIODAT &= (~(1 << 10));
+	delay(1000);
+}
+void cursorHome() { //zet cursor op plaats 0
+	enable();
+	GPIODAT |= 0x20;
+	enable();
+	GPIODAT &= ~0x20;
+}
+void clear() { // maakt display leeg
+	GPIODAT &= ~0xf0;
+	enable();
+	GPIODAT |= 0x10;
+	enable();
+	GPIODAT &= ~0x10;
+	b = 0;
+}
+void write(char a[]) { // zet text in een array en loopt door de array heen en zet het character op het scherm.
+	int i = 0;
+	int length = strlen(a);
+	char temp[64];
+	while (i < strlen(a)) {
+		temp[i] = a[i];
+		if (temp[i] == 'a') {
+			GPIODAT |= 0x60;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x60;
+			GPIODAT |= 0x10;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x10;
+			b++;
+		}
+		if (temp[i] == 'b') {
+			GPIODAT |= 0x60;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x60;
+			GPIODAT |= 0x20;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x20;
+			b++;
+		}
+		if (temp[i] == 'c') {
+			GPIODAT |= 0x60;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x60;
+			GPIODAT |= 0x30;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x30;
+			b++;
+		}
+		if (temp[i] == 'd') {
+			GPIODAT |= 0x60;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x60;
+			GPIODAT |= 0x40;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x40;
+			b++;
+		}
+		if (temp[i] == 'e') {
+			GPIODAT |= 0x60;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x60;
+			GPIODAT |= 0x50;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x50;
+			b++;
+		}
+		if (temp[i] == 'f') {
+			GPIODAT |= 0x60;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x60;
+			GPIODAT |= 0x60;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x60;
+			b++;
+		}
+		if (temp[i] == 'g') {
+			GPIODAT |= 0x60;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x60;
+			GPIODAT |= 0x70;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x70;
+			b++;
+		}
+		if (temp[i] == 'h') {
+			GPIODAT |= 0x60;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x60;
+			GPIODAT |= 0x80;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x80;
+			b++;
+		}
+		if (temp[i] == 'i') {
+			GPIODAT |= 0x60;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x60;
+			GPIODAT |= 0x90;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x90;
+			b++;
+		}
+		if (temp[i] == 'j') {
+			GPIODAT |= 0x60;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x60;
+			GPIODAT |= 0xA0;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0xA0;
+			b++;
+		}
+		if (temp[i] == 'k') {
+			GPIODAT |= 0x60;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x60;
+			GPIODAT |= 0xB0;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0xB0;
+			b++;
+		}
+		if (temp[i] == 'l') {
+			GPIODAT |= 0x60;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x60;
+			GPIODAT |= 0xC0;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0xC0;
+			b++;
+		}
+		if (temp[i] == 'm') {
+			GPIODAT |= 0x60;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x60;
+			GPIODAT |= 0xD0;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0xD0;
+			b++;
+		}
+		if (temp[i] == 'n') {
+			GPIODAT |= 0x60;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x60;
+			GPIODAT |= 0xE0;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0xE0;
+			b++;
+		}
+		if (temp[i] == 'o') {
+			GPIODAT |= 0x60;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x60;
+			GPIODAT |= 0xF0;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0xF0;
+			b++;
+		}
+		if (temp[i] == 'p') {
+			GPIODAT |= 0x70;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x70;
+			GPIODAT |= 0x00;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x00;
+			b++;
+		}
+		if (temp[i] == 'q') {
+			GPIODAT |= 0x70;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x70;
+			GPIODAT |= 0x10;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x10;
+			b++;
+		}
+		if (temp[i] == 'r') {
+			GPIODAT |= 0x70;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x70;
+			GPIODAT |= 0x20;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x20;
+			b++;
+		}
+		if (temp[i] == 's') {
+			GPIODAT |= 0x70;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x70;
+			GPIODAT |= 0x30;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x30;
+			b++;
+		}
+		if (temp[i] == 't') {
+			GPIODAT |= 0x70;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x70;
+			GPIODAT |= 0x40;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x40;
+			b++;
+		}
+		if (temp[i] == 'u') {
+			GPIODAT |= 0x70;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x70;
+			GPIODAT |= 0x50;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x50;
+			b++;
+		}
+		if (temp[i] == 'v') {
+			GPIODAT |= 0x70;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x70;
+			GPIODAT |= 0x60;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x60;
+			b++;
+		}
+		if (temp[i] == 'w') {
+			GPIODAT |= 0x70;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x70;
+			GPIODAT |= 0x70;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x70;
+			b++;
+		}
+		if (temp[i] == 'x') {
+			GPIODAT |= 0x70;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x70;
+			GPIODAT |= 0x80;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x80;
+			b++;
+		}
+		if (temp[i] == 'y') {
+			GPIODAT |= 0x70;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x70;
+			GPIODAT |= 0x90;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x90;
+			b++;
+		}
+		if (temp[i] == 'z') {
+			GPIODAT |= 0x70;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x70;
+			GPIODAT |= 0xA0;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0xA0;
+			b++;
+		}
+		if (temp[i] == ' ') {
+			GPIODAT |= 0xf0;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0xf0;
+			GPIODAT |= 0xE0;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0xE0;
+			b++;
+		}
+		if (temp[i] == ':') {
+			GPIODAT |= 0x30;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x30;
+			GPIODAT |= 0xa0;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0xa0;
+			b++;
+		}
+		if (temp[i] == '0') {
+			GPIODAT |= 0x30;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x30;
+			GPIODAT |= 0x00;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x00;
+			b++;
+		}
+		if (temp[i] == '1') {
+			GPIODAT |= 0x30;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x30;
+			GPIODAT |= 0x10;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x10;
+			b++;
+		}
+		if (temp[i] == '2') {
+			GPIODAT |= 0x30;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x30;
+			GPIODAT |= 0x20;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x20;
+			b++;
+		}
+		if (temp[i] == '3') {
+			GPIODAT |= 0x30;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x30;
+			GPIODAT |= 0x30;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x30;
+			b++;
+		}
+		if (temp[i] == '4') {
+			GPIODAT |= 0x30;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x30;
+			GPIODAT |= 0x40;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x40;
+			b++;
+		}
+		if (temp[i] == '5') {
+			GPIODAT |= 0x30;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x30;
+			GPIODAT |= 0x50;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x50;
+			b++;
+		}
+		if (temp[i] == '6') {
+			GPIODAT |= 0x30;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x30;
+			GPIODAT |= 0x60;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x60;
+			b++;
+		}
+		if (temp[i] == '7') {
+			GPIODAT |= 0x30;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x30;
+			GPIODAT |= 0x70;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x70;
+			b++;
+		}
+		if (temp[i] == '8') {
+			GPIODAT |= 0x30;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x30;
+			GPIODAT |= 0x80;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x80;
+			b++;
+		}
+		if (temp[i] == '9') {
+			GPIODAT |= 0x30;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x30;
+			GPIODAT |= 0x90;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0x90;
+			b++;
+		}
+		if (temp[i] == '/') {
+			GPIODAT |= 0x20;
+			GPIODAT |= 0x100;
+			enable();
+			GPIODAT &= ~0x20;
+			GPIODAT |= 0xF0;
+			enable();
+			GPIODAT &= ~0x100;
+			GPIODAT &= ~0xF0;
+			b++;
+		}
+
+		i++;
+	}
+	if (length >= 16) {
+		scroll(length - 15);
+	}
+
+	b = 0;
+
+}
+void nextLine() { // gaat naar volgende regel
+	GPIODAT |= 0xC0;
+	enable();
+	GPIODAT &= ~0xC0;
+	enable();
+}
+void scroll(int scroll) { //scrolled naar rechts en weer links zodat je alles op de regel kan zien.
+	int rechts = 0;
+	int links = 0;
+	int m = 0;
+	int l = 0;
+	int w = 0;
+	while (w < 100) {
+		delay(10000);
+		w++;
+	}
+	while (rechts < scroll) {
+		GPIODAT |= 0x10;
+		enable();
+		GPIODAT &= 0x10;
+		GPIODAT |= 0x80;
+		enable();
+		GPIODAT &= ~0x80;
+		rechts++;
+		while (m < 100) {
+			delay(10000);
+			m++;
+		}
+	}
+	while (links < scroll) {
+		GPIODAT |= 0x10;
+		enable();
+		GPIODAT &= 0x10;
+		GPIODAT |= 0xC0;
+		enable();
+		GPIODAT &= ~0xC0;
+		links++;
+		while (l < 100) {
+			delay(10000);
+			l++;
+		}
+	}
+}

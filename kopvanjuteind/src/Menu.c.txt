@@ -1,0 +1,67 @@
+/*
+ * menu.c
+
+ *
+ *  Created on: 21 jun. 2016
+ *      Author: kevin
+ */
+#include "I2C.h"
+#include "Menu.h"
+#include "LedScore.h"
+#include "display.h"
+int waarde = 0;
+void menuInit(){
+	 ledsInit();
+	 initCommunication(); // init communication
+}
+int getGameMode() {
+	return waarde;
+}
+void chooseGameMode() {
+
+	while (1) {
+		int check = getbitStorage(); //haalt waarde op van rc5
+		if (check == 1) { //kijkt of het 1 is
+			clear();
+			write("u hebt gekozen voor kind");
+			waarde = 1;
+			break;
+		}
+		if (check == 2) {//kijkt of het 2 is
+			clear();
+			write("u hebt gekozen voor volwassene");
+			waarde = 2;//deze waarde is om te onthouden dat het volwassene is
+			break;
+		}
+	}
+	clear();
+	write("klik 5/4 om het spel te starten");
+}
+void startGame(int ComForm,int GameMode){
+
+	int score=0;
+	if(ComForm==1){			// spi communication
+		//score=readSPI();
+		//ledscore(GameMode,score);
+	}
+	else if(ComForm==2){ 	// i2c communication
+		score=readI2C();
+		ledscore(GameMode,score);
+		char temp1[4];
+		sprintf(temp1, "%ld",score);
+		clear();
+		write("uw score is :");
+		nextLine();
+		write(temp1);
+
+	}
+	else if(ComForm==3){	// serial data communication
+		//score=ReadSerial();
+		//ledscore(GameMode,score);
+	}
+	else{
+		printf("ComForm has to be a number from 1 to 3\n");
+	}
+}
+
+

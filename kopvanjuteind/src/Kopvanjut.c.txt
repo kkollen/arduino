@@ -1,0 +1,50 @@
+/*
+ ===============================================================================
+ Name        : test.c
+ Author      : $(author)
+ Version     :
+ Copyright   : $(copyright)
+ Description : main definition
+ ===============================================================================
+ */
+
+#include "display.h"
+#include "timer.h"
+#include "I2C.h"
+#include "LedScore.h"
+#include "interrupts.h"
+#include "IR.h"
+#include "Menu.h"
+
+#include <stdio.h>
+
+// TODO: insert other include files here
+
+// TODO: insert other definitions and declarations here
+
+int main(void) {
+
+	timerInit();
+	iRInit();
+	menuInit();
+	displayInit();
+	int gameset=0;
+	write("klik op 3 voor het menu");
+	while (1) { // gameloop
+
+		if (getbitStorage() == 3) {
+			menu();
+			chooseGameMode();
+		}
+		if (getbitStorage() == 4) {
+			if(gameset==1){
+			startGame(2, getGameMode());
+			gameset=0;
+			}
+		}
+		if(getbitStorage()==5){
+			gameset=1;
+		}
+		//StartGame(2,getbitStorage());
+	}
+}

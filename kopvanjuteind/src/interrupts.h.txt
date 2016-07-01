@@ -1,0 +1,21 @@
+/*
+ * interrupts.h
+ *
+ *  Created on: 28 sep. 2015
+ *      Author: Justin
+ */
+
+#ifndef INTERRUPTS_H_
+#define INTERRUPTS_H_
+
+#define ISER0 		(*(unsigned int *)0xE000E100)
+#define GPIO0IEV 	(*(unsigned int *)0x5000800C)
+#define GPIO0IE		(*(unsigned int *)0x50008010)
+#define GPIO0IC 	(*(unsigned int *)0x5000801C)
+#define GPIO0IS 	(*(unsigned int *)0x50008004)
+#define GPIO0IBE 	(*(unsigned int *)0x50008008)
+
+void iRInit();
+void PIOINT0_IRQHandler(void);
+int getbitStorage();
+#endif /* INTERRUPTS_H_ */

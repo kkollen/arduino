@@ -1,0 +1,24 @@
+/*
+ * display.h
+ *
+ *  Created on: 24 jun. 2016
+ *      Author: Tom
+ */
+
+#ifndef DISPLAY_H_
+#define DISPLAY_H_
+
+#define GPIO1  0x50010000
+#define GPIODAT (*(unsigned int*)(GPIO1 + 0x3FFC))
+#define GPIODIR (*(unsigned int*)(GPIO1 + 0x8000))
+
+void displayInit(void);
+void enable();
+void write(char a[]);
+void nextLine();
+void clear();
+void menu();
+void scroll(int scroll);
+void cursorHome();
+
+#endif /* DISPLAY_H_ */

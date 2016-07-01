@@ -1,0 +1,17 @@
+/*
+ * IR.h
+ *
+ *  Created on: 28 sep. 2015
+ *      Author: Justin
+ */
+
+#ifndef IR_H_
+#define IR_H_
+#define GPIO0 		0x50000000
+#define GPIO0DIR 	(*(unsigned int *)(GPIO0 + 0x8000))
+#define GPIO0DATA 	(*(unsigned int *)(GPIO0 + 0x3FFC))
+
+unsigned int readIR1();
+
+
+#endif /* IR_H_ */

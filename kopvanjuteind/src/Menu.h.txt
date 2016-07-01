@@ -1,0 +1,16 @@
+/*
+ * menu.h
+ *
+ *  Created on: 21 jun. 2016
+ *      Author: kevin
+ */
+
+#ifndef MENU_H_
+#define MENU_H_
+
+
+void menuInit();
+void startGame(int ComForm,int GameMode);
+void chooseGameMode();
+int getGameMode();
+#endif /* MENU_H_ */
